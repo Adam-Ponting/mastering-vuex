@@ -5,11 +5,7 @@
       <!-- create a link to a route-->
       <!-- using named routes is better as the url may change at a later date -->
       <router-link :to="{ name: 'event-list' }">List</router-link>&nbsp;|
-      <router-link :to="{ name: 'event-create' }">Create</router-link>&nbsp;|
-      <!-- pass 'greg' as username prop -->
-      <router-link :to="{ name: 'user', params: { username: 'greg' } }"
-        >Props</router-link
-      >
+      <router-link :to="{ name: 'event-create' }">Create</router-link>
     </nav>
   </div>
   <!-- renders the matched link -->

@@ -37,7 +37,7 @@ import EventService from '@/services/EventService.js'
 export default {
   props: {
     id: {
-      // received from EventList
+      // received from EventList>EventCard as router prop
       type: [Number, String],
       default: 10
     }
