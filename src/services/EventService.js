@@ -11,13 +11,23 @@ const apiClient = axios.create({
   }
 })
 export default {
-  getEvents() {
+  /*   getEvents() {
     // get all events
     return apiClient.get('/events') // calls baseURL/events
+  },
+ */
+
+  getEvents(perPage, page) {
+    // get all events
+    return apiClient.get('/events?_limit=' + perPage + '&_page=' + page) // calls baseURL/events
   },
   getEvent(id) {
     // get one event
     return apiClient.get('/events/' + id) // get event id with id as prop from EventShow
+  },
+  postEvent(event) {
+    // posts event
+    return apiClient.post('/events', event)
   }
 }
 /*   
