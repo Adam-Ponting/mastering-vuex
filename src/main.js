@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router' // import the router
-import store from './store'
+import store from './store/store' // import store from new directory
 import upperFirst from 'lodash/upperFirst' // to register global icons
 import camelCase from 'lodash/camelCase' // to register global icons
 

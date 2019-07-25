@@ -45,18 +45,6 @@
       </div>
       <input type="submit" class="button -fill-gradient" value="Submit" />
     </form>
-    <!--  -->
-    <p>categories: {{ categories }}</p>
-    <p>user: {{ user }}</p>
-    <p>Cat length: {{ catLength }}</p>
-    <p>Access state via getters: {{ useGetter }}</p>
-    <p>Use a getter in a getter: {{ getterInGetter }}</p>
-    <!--  -->
-    <p>getEvent {{ getEvent(2) }}</p>
-    <p>getEvent {{ getEventByID(4) }}</p>
-    <ul>
-      <li v-for="cat in categories" :key="cat">{{ cat }}</li>
-    </ul>
   </div>
 </template>
 
@@ -82,13 +70,22 @@ export default {
   },
   methods: {
     createEvent() {
-      this.$store.dispatch('createEvent', this.event).then(() => {
-        this.$router.push({ name: 'event-show', params: { id: this.event.id } }) // route to new screen and pass in id as params
-        this.event = this.createFreshEvent() // clears out user input on successful submit
-      })
+      this.$store
+        .dispatch('event/createEvent', this.event)
+        .then(() => {
+          this.$router.push({
+            name: 'event-show',
+            params: { id: this.event.id }
+          }) // route to new screen and pass in id as params
+          this.event = this.createFreshEvent() // clears out user input on successful submit
+        })
+        .catch(() => {
+          // throw error in event.js>createEvent reverts to here
+          console.log('There was a problem')
+        })
     },
     createFreshEvent() {
-      const user = this.$store.state.user
+      const user = this.$store.state.user.user // state.module.state
       const id = Math.floor(Math.random() * 10000000) // random id
       return {
         id: id,
@@ -105,10 +102,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getEventByID']), // import getters
+    ...mapGetters('event', ['getEventByID']), // import getters from user module
+    //...mapGetters(['getEventByID']), // import getters
     getEvent() {
-      // get event from array by id, which is passed in as an argument(2)
-      return this.$store.getters.getEventByID
+      // get event from array by module and id
+      return this.$store.getters['event/getEventByID']
     },
     useGetter() {
       return this.$store.getters.doneTodos
@@ -121,8 +119,8 @@ export default {
       return this.$store.getters.catLength
     },
     ...mapState([
-      //'categories',
       'user'
+      //'categories',
     ]) // use ...object spread operator to add additional computed properties
   }
   /* // get cat array length

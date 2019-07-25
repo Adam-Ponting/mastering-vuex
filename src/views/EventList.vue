@@ -1,18 +1,20 @@
 <template>
   <div>
-    <h1>Events Listing</h1>
+    <!-- {{ moduleName.State.Property }} -->
+    <h1>Events for {{ user.user.name }}</h1>
     <!-- v-for events array, pass in event as prop to each event-card -->
-    <event-card v-for="event in events" :key="event.id" :event="event" />
+    <event-card v-for="event in event.events" :key="event.id" :event="event" />
     <!-- only show if not on page 1 -->
     <template v-if="page != 1">
       <router-link
         :to="{ name: 'event-list', query: { page: page - 1 } }"
         rel="prev"
         >Prev Page</router-link
-      >|
+      >
+      <span v-if="hasNextPage">&nbsp;|&nbsp;</span>
     </template>
     <!-- only show if not on last page -->
-    <template v-if="this.eventsTotal > this.page * 3">
+    <template v-if="hasNextPage">
       <router-link :to="{ name: 'event-list', query: { page: page + 1 } }"
         >Next Page</router-link
       >
@@ -24,16 +26,14 @@
 import EventCard from '@/components/EventCard.vue'
 import { mapState } from 'vuex'
 
-/* not needed
-import axios from 'axios' // import axios
- */
 export default {
   components: {
     EventCard
   },
   created() {
-    this.$store.dispatch('fetchEvents', {
-      perPage: 3, // show 3 items per page
+    this.perPage = 3
+    this.$store.dispatch('event/fetchEvents', {
+      perPage: this.perPage, // show 3 items per page
       page: this.page // bound to page computed property
     }) // call action to get events
     /* // not worth doing axios calls in components as creates multiple instances
@@ -51,14 +51,13 @@ export default {
  */
   },
   computed: {
-    eventsTotal() {
-      // get the total number of events from store
-      return this.$store.state.eventsTotal
-    },
     page() {
       return parseInt(this.$route.query.page || 1) // if no url params, use 1
     },
-    ...mapState(['events']) // get access to state
+    hasNextPage() {
+      return this.event.eventsTotal > this.page * this.perPage
+    },
+    ...mapState(['event', 'user']) // get access to state // get the total number of events from store
   }
 }
 </script>
